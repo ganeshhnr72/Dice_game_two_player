@@ -25,6 +25,8 @@ let newGame = document
     removePlayer2();
     document.querySelector('#score--0').textContent = 43;
     document.querySelector('#score--1').textContent = 24;
+    player1.remove('player--winner');
+    player2.remove('player--winner');
   });
 document.querySelector('.btn--roll').addEventListener('click', () => {
   roll = Math.trunc(Math.random() * 6) + 1;
@@ -46,11 +48,13 @@ document.querySelector('.btn--hold').addEventListener('click', () => {
   if (player1.length == 3) {
     hold1 = hold1 + roll;
     document.querySelector('#score--0').textContent = hold1;
+    // roll = '';
     removePlayer1();
   } else if (player2.length == 3) {
     hold2 = hold2 + roll;
     document.querySelector('#current--1').textContent = roll;
     document.querySelector('#score--1').textContent = hold2;
+    // roll = '';
     removePlayer2();
   }
   if (hold1 >= 100) {
