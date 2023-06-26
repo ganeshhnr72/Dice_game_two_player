@@ -1,65 +1,67 @@
 'use strict';
-// Author: Ganesh M N
-// Created on 22 June 23
+// // Author: Ganesh M N
+// // Created on 26 June 23
 
-let roll = 5;
-let hold1 = 0;
-let hold2 = 0;
-
-let player1 = document.querySelector('.player--0').classList;
-let player2 = document.querySelector('.player--1').classList;
-let removePlayer1 = function () {
-  player1.remove('player--active');
-  player2.add('player--active');
+let dice = document.querySelector('.dice');
+dice.classList.add('hide');
+let player0 = document.querySelector('.player--0');
+let player1 = document.querySelector('.player--1');
+let rollDice = document.querySelector('.btn--roll');
+let newGame = document.querySelector('.btn--new');
+let hold = document.querySelector('.btn--hold');
+let score0 = document.getElementById('score--0');
+let score1 = document.getElementById('score--1');
+let holdScore0 = 0;
+let holdScore1 = 0;
+let currentScore = 0;
+let currentEl = 0;
+let currentRoll = 0;
+let toggleClass = function () {
+  player0.classList.toggle('player--active');
+  player1.classList.toggle('player--active');
 };
-let removePlayer2 = function () {
-  player2.remove('player--active');
-  player1.add('player--active');
-};
-let newGame = document
-  .querySelector('.btn--new')
-  .addEventListener('click', () => {
-    hold1 = 0;
-    hold2 = 0;
-    roll = 5;
-    removePlayer2();
-    document.querySelector('#score--0').textContent = 43;
-    document.querySelector('#score--1').textContent = 24;
-    player1.remove('player--winner');
-    player2.remove('player--winner');
-  });
-document.querySelector('.btn--roll').addEventListener('click', () => {
-  roll = Math.trunc(Math.random() * 6) + 1;
-  document.querySelector('img').setAttribute('src', './dice-' + roll + '.png');
 
-  if (roll == 1 && player1.length == 3) {
-    removePlayer1();
-  } else if (roll == 1 && player2.length == 3) {
-    removePlayer2();
-  }
-  if (player1.length > 2) {
-    document.querySelector('#current--0').textContent = roll;
+rollDice.addEventListener('click', () => {
+  let randomDiceRoll = Math.trunc(Math.random() * 6) + 1;
+  currentRoll = randomDiceRoll;
+  dice.classList.remove('hide');
+  dice.src = `dice-${randomDiceRoll}.png`;
+
+  if (randomDiceRoll != 1) {
+    currentScore += randomDiceRoll;
+    document.getElementById(`current--${currentEl}`).textContent = currentScore;
   } else {
-    document.querySelector('#current--1').textContent = roll;
+    currentScore = 0;
+    document.getElementById(`current--${currentEl}`).textContent = 0;
+    currentEl = currentEl === 0 ? 1 : 0;
+    toggleClass();
   }
 });
 
-document.querySelector('.btn--hold').addEventListener('click', () => {
-  if (player1.length == 3) {
-    hold1 = hold1 + roll;
-    document.querySelector('#score--0').textContent = hold1;
-    // roll = '';
-    removePlayer1();
-  } else if (player2.length == 3) {
-    hold2 = hold2 + roll;
-    document.querySelector('#current--1').textContent = roll;
-    document.querySelector('#score--1').textContent = hold2;
-    // roll = '';
-    removePlayer2();
+hold.addEventListener('click', () => {
+  if (currentEl === 0) {
+    holdScore0 += currentScore;
+    score0.textContent = holdScore0;
+    currentEl = 1;
+    currentScore = 0;
+  } else {
+    holdScore1 += currentScore;
+    score1.textContent = holdScore1;
+    currentEl = 0;
+    currentScore = 0;
   }
-  if (hold1 >= 100) {
-    player1.add('player--winner');
-  } else if (hold2 >= 100) {
-    player2.add('player--winner');
+  document.getElementById('current--0').textContent = 0;
+  document.getElementById('current--1').textContent = 0;
+  console.log('hold score 1 ' + holdScore0);
+  console.log('hold score 2 ' + holdScore1);
+  if (holdScore0 >= 100) {
+    player0.classList.add('player--winner');
+  } else if (holdScore1 >= 100) {
+    player1.classList.add('player--winner');
   }
+  toggleClass();
+});
+
+newGame.addEventListener('click', () => {
+  location.reload();
 });
